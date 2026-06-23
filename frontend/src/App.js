@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
+import Navbar from './Navbar';
 import ShoppingList from './ShoppingList';
 import AddItem from './AddItem';
+import './styles/App.css';
+import './styles/Navbar.css';
 
 function App() {
   const [items, setItems] = useState([]);
@@ -12,22 +15,25 @@ function App() {
       setLoading(false);
     }, 2000);
   }, []);
-  
+
   const addItem = (newItem) => {
     setItems([...items, newItem]);
   };
 
   return (
-    <div>
-      <h1>SmartCart 🛒</h1>
-      {loading ? (
-        <p>Loading your list...</p>
-      ) : (
-        <>
-          <AddItem onAdd={addItem} />
-          <ShoppingList items={items} />
-        </>
-      )}
+    <div className="app">
+      <Navbar />
+      <div className="container">
+        <h2>My Shopping List</h2>
+        {loading ? (
+          <p>Loading your list...</p>
+        ) : (
+          <>
+            <AddItem onAdd={addItem} />
+            <ShoppingList items={items} />
+          </>
+        )}
+      </div>
     </div>
   );
 }

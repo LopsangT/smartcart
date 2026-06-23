@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState } from 'react';
+import './styles/AddItem.css';
 
 function AddItem({ onAdd }) {
   const [inputValue, setInputValue] = useState('');
@@ -10,7 +11,7 @@ function AddItem({ onAdd }) {
   };
 
   return (
-    <div>
+    <div className="add-item">
       <input
         type="text"
         value={inputValue}
