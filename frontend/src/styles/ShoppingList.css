@@ -35,3 +35,48 @@
   padding: 2rem;
   font-size: 1rem;
 }
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #ff4d4d;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.delete-btn:hover {
+  background-color: #fff0f0;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f2f5;
+}
+
+.list-header span {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.clear-btn {
+  background: none;
+  border: 1px solid #ff4d4d;
+  color: #ff4d4d;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.clear-btn:hover {
+  background-color: #ff4d4d;
+  color: white;
+}

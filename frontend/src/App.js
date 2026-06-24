@@ -20,6 +20,14 @@ function App() {
     setItems([...items, newItem]);
   };
 
+  const deleteItem = (index) => {
+    setItems(items.filter((_, i) => i !== index));
+  };
+
+  const clearAll = () => {
+    setItems([]);
+  };
+
   return (
     <div className="app">
       <Navbar />
@@ -30,7 +38,7 @@ function App() {
         ) : (
           <>
             <AddItem onAdd={addItem} />
-            <ShoppingList items={items} />
+            <ShoppingList items={items} onDelete={deleteItem} onClearAll={clearAll} />
           </>
         )}
       </div>
