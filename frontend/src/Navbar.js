@@ -1,13 +1,16 @@
+import { Link } from 'react-router-dom';
+import './styles/Navbar.css';
+
 function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <h1>SmartCart 🛒</h1>
+        <Link to="/">SmartCart 🛒</Link>
       </div>
       <div className="navbar-links">
-        <a href="/">Home</a>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
+        <Link to="/">Home</Link>
+        <Link to="/login">Login</Link>
+        <Link to="/register">Register</Link>
       </div>
     </nav>
   );
