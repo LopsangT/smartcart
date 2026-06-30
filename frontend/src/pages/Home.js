@@ -7,10 +7,13 @@ function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
-      setItems(['milk', 'eggs', 'bread']);
-      setLoading(false);
-    }, 2000);
+    fetch('http://localhost:8080/api/items')
+      .then((response) => response.json())
+      .then((data) => {
+        const itemNames = data.map((item) => item.name);
+        setItems(itemNames);
+        setLoading(false);
+      });
   }, []);
 
   const addItem = (newItem) => {
