@@ -7,24 +7,47 @@ function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    fetchItems();
+  }, []);
+
+  const fetchItems = () => {
     fetch('http://localhost:8080/api/items')
       .then((response) => response.json())
       .then((data) => {
-        const itemNames = data.map((item) => item.name);
-        setItems(itemNames);
+        setItems(data);
         setLoading(false);
       });
-  }, []);
-
-  const addItem = (newItem) => {
-    setItems([...items, newItem]);
   };
 
-  const deleteItem = (index) => {
-    setItems(items.filter((_, i) => i !== index));
+  const addItem = (name) => {
+    fetch('http://localhost:8080/api/items', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name: name, quantity: 1 }),
+    })
+      .then((response) => response.json())
+      .then((newItem) => {
+        setItems([...items, newItem]);
+      });
+  };
+
+  const deleteItem = (id) => {
+    fetch(`http://localhost:8080/api/items/${id}`, {
+      method: 'DELETE',
+    })
+      .then(() => {
+        setItems(items.filter((item) => item.id !== id));
+      });
   };
 
   const clearAll = () => {
+    items.forEach((item) => {
+      fetch(`http://localhost:8080/api/items/${item.id}`, {
+        method: 'DELETE',
+      });
+    });
     setItems([]);
   };
 

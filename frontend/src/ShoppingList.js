@@ -14,12 +14,12 @@ function ShoppingList({ items, onDelete, onClearAll }) {
             </button>
           </div>
           <ul>
-            {items.map((item, index) => (
-              <li className="shopping-list-item" key={index}>
-                <span>{item}</span>
+            {items.map((item) => (
+              <li className="shopping-list-item" key={item.id}>
+                <span>{item.name}</span>
                 <button
                   className="delete-btn"
-                  onClick={() => onDelete(index)}
+                  onClick={() => onDelete(item.id)}
                 >
                   ✕
                 </button>
