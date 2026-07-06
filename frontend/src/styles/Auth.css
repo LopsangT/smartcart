@@ -90,3 +90,13 @@
 .auth-switch a:hover {
   text-decoration: underline;
 }
+
+.auth-error {
+  background-color: #ffe6e6;
+  color: #cc0000;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}

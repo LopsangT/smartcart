@@ -1,14 +1,34 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Auth.css';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log('Logging in with:', email, password);
+    setError('');
+
+    fetch('http://localhost:8080/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    })
+      .then((response) => response.json().then((data) => ({ status: response.status, data })))
+      .then(({ status, data }) => {
+        if (status === 200) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('username', data.username);
+          navigate('/');
+        } else {
+          setError(data.error);
+        }
+      });
   };
 
   return (
@@ -16,6 +36,8 @@ function Login() {
       <div className="auth-card">
         <h2>Welcome Back 👋</h2>
         <p className="auth-subtitle">Login to your SmartCart account</p>
+
+        {error && <p className="auth-error">{error}</p>}
 
         <div className="auth-form">
           <div className="form-group">

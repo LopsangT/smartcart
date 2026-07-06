@@ -1,15 +1,33 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Auth.css';
 
 function Register() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleRegister = (e) => {
     e.preventDefault();
-    console.log('Registering with:', username, email, password);
+    setError('');
+
+    fetch('http://localhost:8080/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, email, password }),
+    })
+      .then((response) => response.json().then((data) => ({ status: response.status, data })))
+      .then(({ status, data }) => {
+        if (status === 201) {
+          navigate('/login');
+        } else {
+          setError(data.error);
+        }
+      });
   };
 
   return (
@@ -17,6 +35,8 @@ function Register() {
       <div className="auth-card">
         <h2>Create Account 🛒</h2>
         <p className="auth-subtitle">Sign up for your SmartCart account</p>
+
+        {error && <p className="auth-error">{error}</p>}
 
         <div className="auth-form">
           <div className="form-group">
