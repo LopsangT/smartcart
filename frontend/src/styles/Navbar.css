@@ -28,3 +28,24 @@
 .navbar-links a:hover {
   color: #00d4ff;
 }
+
+.navbar-username {
+  color: #00d4ff;
+  font-size: 0.95rem;
+}
+
+.navbar-logout {
+  background: none;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.navbar-logout:hover {
+  background-color: #ffffff;
+  color: #1a1a2e;
+}
