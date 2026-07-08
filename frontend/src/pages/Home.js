@@ -6,12 +6,19 @@ function Home() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const getAuthHeader = () => {
+    const token = localStorage.getItem('token');
+    return { Authorization: `Bearer ${token}` };
+  };
+
   useEffect(() => {
     fetchItems();
   }, []);
 
   const fetchItems = () => {
-    fetch('http://localhost:8080/api/items')
+    fetch('http://localhost:8080/api/items', {
+      headers: getAuthHeader(),
+    })
       .then((response) => response.json())
       .then((data) => {
         setItems(data);
@@ -24,6 +31,7 @@ function Home() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeader(),
       },
       body: JSON.stringify({ name: name, quantity: 1 }),
     })
@@ -36,6 +44,7 @@ function Home() {
   const deleteItem = (id) => {
     fetch(`http://localhost:8080/api/items/${id}`, {
       method: 'DELETE',
+      headers: getAuthHeader(),
     })
       .then(() => {
         setItems(items.filter((item) => item.id !== id));
@@ -46,6 +55,7 @@ function Home() {
     items.forEach((item) => {
       fetch(`http://localhost:8080/api/items/${item.id}`, {
         method: 'DELETE',
+        headers: getAuthHeader(),
       });
     });
     setItems([]);
