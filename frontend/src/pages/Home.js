@@ -27,14 +27,14 @@ function Home() {
       });
   };
 
-  const addItem = (name) => {
+  const addItem = (name, price) => {
     fetch('http://localhost:8080/api/items', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeader(),
       },
-      body: JSON.stringify({ name: name, quantity: 1 }),
+      body: JSON.stringify({ name: name, quantity: 1, price: price }),
     })
       .then((response) => response.json())
       .then((newItem) => {
