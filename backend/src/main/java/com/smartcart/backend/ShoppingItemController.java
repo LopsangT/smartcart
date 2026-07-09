@@ -43,4 +43,17 @@ public class ShoppingItemController {
     public void deleteItem(@PathVariable Long id) {
         itemRepository.deleteById(id);
     }
+
+    @PutMapping("/{id}")
+    public Item updateQuantity(@PathVariable Long id, @RequestBody Item updatedItem) {
+        Optional<Item> itemOptional = itemRepository.findById(id);
+
+        if (itemOptional.isPresent()) {
+            Item item = itemOptional.get();
+            item.setQuantity(updatedItem.getQuantity());
+            return itemRepository.save(item);
+        }
+
+        return null;
+    }
 }

@@ -21,6 +21,7 @@ function Home() {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log('Items received:', data);
         setItems(data);
         setLoading(false);
       });
@@ -61,6 +62,25 @@ function Home() {
     setItems([]);
   };
 
+  const updateQuantity = (id, newQuantity) => {
+    if (newQuantity < 1) return;
+
+    fetch(`http://localhost:8080/api/items/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify({ quantity: newQuantity }),
+    })
+      .then((response) => response.json())
+      .then((updatedItem) => {
+        setItems(
+          items.map((item) => (item.id === id ? updatedItem : item))
+        );
+      });
+  };
+
   return (
     <div className="container">
       <h2>My Shopping List</h2>
@@ -73,6 +93,7 @@ function Home() {
             items={items}
             onDelete={deleteItem}
             onClearAll={clearAll}
+            onUpdateQuantity={updateQuantity}
           />
         </>
       )}
