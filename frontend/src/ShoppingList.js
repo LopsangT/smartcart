@@ -1,6 +1,11 @@
 import './styles/ShoppingList.css';
 
-function ShoppingList({ items, onDelete, onClearAll, onUpdateQuantity }) {
+function ShoppingList({ items, onDelete, onClearAll, onUpdateQuantity, onUpdatePrice }) {
+  const total = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
   return (
     <div className="shopping-list">
       {items.length === 0 ? (
@@ -32,6 +37,20 @@ function ShoppingList({ items, onDelete, onClearAll, onUpdateQuantity }) {
                   </button>
                 </div>
                 <span className="item-name">{item.name}</span>
+                <div className="price-section">
+                  <span className="price-symbol">£</span>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    className="price-edit"
+                    key={`${item.id}-${item.price}`}
+                    defaultValue={Number(item.price).toFixed(2)}
+                    onBlur={(e) => onUpdatePrice(item.id, e.target.value)}
+                  />
+                  <span className="subtotal">
+                    = £{(item.price * item.quantity).toFixed(2)}
+                  </span>
+                </div>
                 <button
                   className="delete-btn"
                   onClick={() => onDelete(item.id)}
@@ -41,6 +60,10 @@ function ShoppingList({ items, onDelete, onClearAll, onUpdateQuantity }) {
               </li>
             ))}
           </ul>
+          <div className="total-section">
+            <span>Total:</span>
+            <span className="total-amount">£{total.toFixed(2)}</span>
+          </div>
         </>
       )}
     </div>

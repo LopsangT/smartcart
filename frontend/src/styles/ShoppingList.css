@@ -116,3 +116,57 @@
   flex: 1;
   margin-left: 0.8rem;
 }
+
+.price-section {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-right: 1rem;
+}
+
+.price-symbol {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.price-edit {
+  width: 70px;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.price-edit:focus {
+  border-color: #00d4ff;
+}
+
+.subtotal {
+  color: #999;
+  font-size: 0.85rem;
+  min-width: 70px;
+}
+
+.total-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid #f0f2f5;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.total-amount {
+  color: #00a86b;
+  font-size: 1.3rem;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

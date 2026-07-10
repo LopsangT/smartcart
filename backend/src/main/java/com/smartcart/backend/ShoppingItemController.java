@@ -45,15 +45,22 @@ public class ShoppingItemController {
     }
 
     @PutMapping("/{id}")
-    public Item updateQuantity(@PathVariable Long id, @RequestBody Item updatedItem) {
+    public Item updateItem(@PathVariable Long id, @RequestBody Item updatedItem) {
         Optional<Item> itemOptional = itemRepository.findById(id);
 
         if (itemOptional.isPresent()) {
             Item item = itemOptional.get();
-            item.setQuantity(updatedItem.getQuantity());
+
+            if (updatedItem.getQuantity() != null && updatedItem.getQuantity() > 0) {
+                item.setQuantity(updatedItem.getQuantity());
+            }
+
+            if (updatedItem.getPrice() != null) {
+                item.setPrice(updatedItem.getPrice());
+            }
+
             return itemRepository.save(item);
         }
-
         return null;
     }
 }

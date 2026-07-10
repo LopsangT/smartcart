@@ -73,12 +73,40 @@ function Home() {
       },
       body: JSON.stringify({ quantity: newQuantity }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) throw new Error('Update failed');
+        return response.json();
+      })
       .then((updatedItem) => {
         setItems(
           items.map((item) => (item.id === id ? updatedItem : item))
         );
-      });
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const updatePrice = (id, newPrice) => {
+    const parsed = parseFloat(newPrice);
+    if (isNaN(parsed) || parsed < 0) return;
+
+    fetch(`http://localhost:8080/api/items/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify({ price: parsed }),
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Update failed');
+        return response.json();
+      })
+      .then((updatedItem) => {
+        setItems(
+          items.map((item) => (item.id === id ? updatedItem : item))
+        );
+      })
+      .catch((error) => console.error(error));
   };
 
   return (
@@ -94,6 +122,7 @@ function Home() {
             onDelete={deleteItem}
             onClearAll={clearAll}
             onUpdateQuantity={updateQuantity}
+            onUpdatePrice={updatePrice}
           />
         </>
       )}
