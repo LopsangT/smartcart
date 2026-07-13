@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/items")
@@ -18,6 +19,9 @@ public class ShoppingItemController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private GeminiService geminiService;
 
     private User getUserFromToken(String authHeader) {
         String token = authHeader.replace("Bearer ", "");
@@ -62,5 +66,13 @@ public class ShoppingItemController {
             return itemRepository.save(item);
         }
         return null;
+    }
+
+    @GetMapping("/suggestions")
+    public Map<String, String> getSuggestions(@RequestHeader("Authorization") String authHeader) {
+        User user = getUserFromToken(authHeader);
+        List<Item> items = itemRepository.findByUser(user);
+        String suggestions = geminiService.getSuggestions(items);
+        return Map.of("suggestions", suggestions);
     }
 }
