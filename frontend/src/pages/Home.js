@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import ShoppingList from '../ShoppingList';
 import AddItem from '../AddItem';
+import AISuggestions from '../AISuggestions';
 
 function Home() {
   const [items, setItems] = useState([]);
@@ -109,6 +110,32 @@ function Home() {
       .catch((error) => console.error(error));
   };
 
+  const [suggestions, setSuggestions] = useState([]);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+
+  const getSuggestions = () => {
+    setLoadingSuggestions(true);
+    fetch('http://localhost:8080/api/items/suggestions', {
+      headers: getAuthHeader(),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const suggestionArray = data.suggestions
+          .split(',')
+          .map((item) => item.trim());
+        setSuggestions(suggestionArray);
+        setLoadingSuggestions(false);
+      })
+      .catch(() => {
+        setLoadingSuggestions(false);
+      });
+  };
+
+  const addSuggestion = (name) => {
+    addItem(name, 0);
+    setSuggestions(suggestions.filter((s) => s !== name));
+  };
+
   return (
     <div className="container">
       <h2>My Shopping List</h2>
@@ -117,6 +144,12 @@ function Home() {
       ) : (
         <>
           <AddItem onAdd={addItem} />
+          <AISuggestions
+            suggestions={suggestions}
+            loading={loadingSuggestions}
+            onGetSuggestions={getSuggestions}
+            onAddSuggestion={addSuggestion}
+          />
           <ShoppingList
             items={items}
             onDelete={deleteItem}
