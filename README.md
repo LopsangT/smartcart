@@ -2,8 +2,6 @@
 
 A full-stack, AI-powered shopping list app built with React and Spring Boot. Users can create an account, build a shopping list, track prices with live running totals, and get AI-generated product suggestions based on what's already in their cart.
 
-> Built as a self-directed learning project to prepare for software engineering internship applications — from zero React/Spring Boot experience to a fully working full-stack app in 15 days.
-
 ---
 
 ## ✨ Features
