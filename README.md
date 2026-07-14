@@ -108,13 +108,16 @@ The app will be available at `http://localhost:3000`, with the API running on `h
 
 ## 📚 What I Learned
 
-This project was my introduction to full-stack development, covering:
-- React fundamentals (state, props, hooks, routing)
-- Building REST APIs with Spring Boot and Spring Data JPA
-- Relational database design (one-to-many relationships, foreign keys)
-- Authentication & security (JWT, password hashing, protected routes, CORS)
-- Integrating a third-party AI API into a backend service
-- Debugging across the full stack — from JS runtime errors to Java stack traces to SQL schema mismatches
+I started this project with zero React or Spring Boot experience, so most of what's below came from actually breaking things and figuring out why.
+
+- **React fundamentals** — state, props, hooks, and React Router, learned by building the shopping list, auth pages, and protected routes from scratch
+- **REST APIs in Spring Boot** — full CRUD, plus the difference between GET/POST/PUT and how `@RequestBody`/`@ResponseBody` convert between JSON and Java objects
+- **Relational data** — modeling a one-to-many relationship between `User` and `Item` with `@ManyToOne`/`@JoinColumn`, and why the foreign key lives on the "many" side
+- **JWT auth** — building register/login endpoints with BCrypt password hashing, and *why* my tokens kept breaking every time I restarted the backend (the signing key was being regenerated randomly on every startup — fixed it by loading a fixed key from a config value instead)
+- **CORS in practice** — chased down a 403 on preflight `OPTIONS` requests that curl couldn't reproduce but the browser could, which turned out to be Spring Security blocking the preflight before it ever reached my CORS config
+- **`int` vs `Integer`** — spent a good hour confused why partial PUT updates (e.g. updating only price) kept throwing `Cannot map null into type int`, before realizing primitives can never be null and Entity fields need wrapper types
+- **Integrating a third-party API** — calling the Gemini API from a Spring service class, keeping the API key out of git with `.gitignore`, and parsing the AI's response back into usable suggestions on the frontend
+- **Reading stack traces properly** — the biggest overall lesson was learning to actually read the full error (Spring Boot's, Postgres's, or the browser console's) instead of guessing, since almost every bug above was solvable once I found the *right* line in a wall of logs
 
 ---
 
