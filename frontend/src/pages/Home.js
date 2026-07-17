@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ShoppingList from '../ShoppingList';
 import AddItem from '../AddItem';
 import AISuggestions from '../AISuggestions';
@@ -6,26 +7,46 @@ import AISuggestions from '../AISuggestions';
 function Home() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const getAuthHeader = () => {
     const token = localStorage.getItem('token');
     return { Authorization: `Bearer ${token}` };
   };
 
+  const handleAuthError = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    navigate('/login');
+  };
+
+  const isAuthError = (response) => {
+    if (response.status === 401 || response.status === 403) {
+      handleAuthError();
+      return true;
+    }
+    return false;
+  };
+
   useEffect(() => {
     fetchItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchItems = () => {
     fetch('http://localhost:8080/api/items', {
       headers: getAuthHeader(),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (isAuthError(response)) return null;
+        return response.json();
+      })
       .then((data) => {
-        console.log('Items received:', data);
+        if (data === null) return;
         setItems(data);
         setLoading(false);
-      });
+      })
+      .catch((error) => console.error(error));
   };
 
   const addItem = (name, price) => {
@@ -37,10 +58,15 @@ function Home() {
       },
       body: JSON.stringify({ name: name, quantity: 1, price: price }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (isAuthError(response)) return null;
+        return response.json();
+      })
       .then((newItem) => {
+        if (newItem === null) return;
         setItems([...items, newItem]);
-      });
+      })
+      .catch((error) => console.error(error));
   };
 
   const deleteItem = (id) => {
@@ -48,9 +74,11 @@ function Home() {
       method: 'DELETE',
       headers: getAuthHeader(),
     })
-      .then(() => {
+      .then((response) => {
+        if (isAuthError(response)) return;
         setItems(items.filter((item) => item.id !== id));
-      });
+      })
+      .catch((error) => console.error(error));
   };
 
   const clearAll = () => {
@@ -58,6 +86,8 @@ function Home() {
       fetch(`http://localhost:8080/api/items/${item.id}`, {
         method: 'DELETE',
         headers: getAuthHeader(),
+      }).then((response) => {
+        isAuthError(response);
       });
     });
     setItems([]);
@@ -75,10 +105,12 @@ function Home() {
       body: JSON.stringify({ quantity: newQuantity }),
     })
       .then((response) => {
+        if (isAuthError(response)) return null;
         if (!response.ok) throw new Error('Update failed');
         return response.json();
       })
       .then((updatedItem) => {
+        if (updatedItem === null) return;
         setItems(
           items.map((item) => (item.id === id ? updatedItem : item))
         );
@@ -99,10 +131,12 @@ function Home() {
       body: JSON.stringify({ price: parsed }),
     })
       .then((response) => {
+        if (isAuthError(response)) return null;
         if (!response.ok) throw new Error('Update failed');
         return response.json();
       })
       .then((updatedItem) => {
+        if (updatedItem === null) return;
         setItems(
           items.map((item) => (item.id === id ? updatedItem : item))
         );
@@ -118,8 +152,12 @@ function Home() {
     fetch('http://localhost:8080/api/items/suggestions', {
       headers: getAuthHeader(),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (isAuthError(response)) return null;
+        return response.json();
+      })
       .then((data) => {
+        if (data === null) return;
         const suggestionArray = data.suggestions
           .split(',')
           .map((item) => item.trim());
