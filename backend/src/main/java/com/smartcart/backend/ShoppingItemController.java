@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/items")
@@ -16,6 +16,9 @@ public class ShoppingItemController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private GroupListRepository groupListRepository;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -30,25 +33,27 @@ public class ShoppingItemController {
         return userOptional.orElse(null);
     }
 
-    @GetMapping
-    public List<Item> getItems(@RequestHeader("Authorization") String authHeader) {
-        User user = getUserFromToken(authHeader);
-        return itemRepository.findByUser(user);
+    @GetMapping("/{groupListId}")
+    public List<Item> getItems(@PathVariable Long groupListId, @RequestHeader("Authorization") String authHeader) {
+        Optional<GroupList> groupListOptional = groupListRepository.findById(groupListId);
+        if (groupListOptional.isEmpty()) return List.of();
+        return itemRepository.findByGroupList(groupListOptional.get());
     }
 
-    @PostMapping
-    public Item addItem(@RequestBody Item item, @RequestHeader("Authorization") String authHeader) {
-        User user = getUserFromToken(authHeader);
-        item.setUser(user);
+    @PostMapping("/{groupListId}")
+    public Item addItem(@PathVariable Long groupListId, @RequestBody Item item, @RequestHeader("Authorization") String authHeader) {
+        Optional<GroupList> groupListOptional = groupListRepository.findById(groupListId);
+        if (groupListOptional.isEmpty()) return null;
+        item.setGroupList(groupListOptional.get());
         return itemRepository.save(item);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/item/{id}")
     public void deleteItem(@PathVariable Long id) {
         itemRepository.deleteById(id);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/item/{id}")
     public Item updateItem(@PathVariable Long id, @RequestBody Item updatedItem) {
         Optional<Item> itemOptional = itemRepository.findById(id);
 
@@ -68,10 +73,11 @@ public class ShoppingItemController {
         return null;
     }
 
-    @GetMapping("/suggestions")
-    public Map<String, String> getSuggestions(@RequestHeader("Authorization") String authHeader) {
-        User user = getUserFromToken(authHeader);
-        List<Item> items = itemRepository.findByUser(user);
+    @GetMapping("/{groupListId}/suggestions")
+    public Map<String, String> getSuggestions(@PathVariable Long groupListId, @RequestHeader("Authorization") String authHeader) {
+        Optional<GroupList> groupListOptional = groupListRepository.findById(groupListId);
+        if (groupListOptional.isEmpty()) return Map.of("suggestions", "");
+        List<Item> items = itemRepository.findByGroupList(groupListOptional.get());
         String suggestions = geminiService.getSuggestions(items);
         return Map.of("suggestions", suggestions);
     }

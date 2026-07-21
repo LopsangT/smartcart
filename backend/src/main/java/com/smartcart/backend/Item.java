@@ -19,17 +19,17 @@ public class Item {
     private Double price;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "group_list_id")
+    private GroupList groupList;
 
     public Item() {
     }
 
-    public Item(String name, Integer quantity, Double price, User user) {
+    public Item(String name, Integer quantity, Double price, GroupList groupList) {
         this.name = name;
         this.quantity = quantity;
         this.price = price;
-        this.user = user;
+        this.groupList = groupList;
     }
 
     public Long getId() {
@@ -64,11 +64,11 @@ public class Item {
         this.price = price;
     }
 
-    public User getUser() {
-        return user;
+    public GroupList getGroupList() {
+        return groupList;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setGroupList(GroupList groupList) {
+        this.groupList = groupList;
     }
 }
