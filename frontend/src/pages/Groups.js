@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Auth.css';
+import '../styles/Groups.css';
 
 function Groups() {
   const [groups, setGroups] = useState([]);
@@ -73,37 +73,50 @@ function Groups() {
     <div className="container">
       <h2>My Lists</h2>
 
-      <div className="form-group">
-        <label>Create a new list</label>
-        <input
-          type="text"
-          value={newGroupName}
-          onChange={(e) => setNewGroupName(e.target.value)}
-          placeholder="e.g. Personal Groceries"
-        />
-        <button className="auth-btn" onClick={createGroup}>Create</button>
-      </div>
+      <div className="groups-actions">
+        <div className="groups-action-row">
+          <input
+            type="text"
+            value={newGroupName}
+            onChange={(e) => setNewGroupName(e.target.value)}
+            placeholder="e.g. Personal Groceries"
+          />
+          <button onClick={createGroup}>Create list</button>
+        </div>
 
-      <div className="form-group">
-        <label>Join a list with an invite code</label>
-        <input
-          type="text"
-          value={inviteCode}
-          onChange={(e) => setInviteCode(e.target.value)}
-          placeholder="e.g. A3F9K2"
-        />
-        <button className="auth-btn" onClick={joinGroup}>Join</button>
+        <div className="groups-action-row">
+          <input
+            type="text"
+            className="invite-code-input"
+            value={inviteCode}
+            onChange={(e) => setInviteCode(e.target.value)}
+            placeholder="Code"
+            maxLength={6}
+          />
+          <button onClick={joinGroup}>Join list</button>
+        </div>
         {error && <p className="auth-error">{error}</p>}
       </div>
 
-      <h3>Your Lists</h3>
-      <ul>
+      <div className="groups-grid">
         {groups.map((group) => (
-          <li key={group.id} onClick={() => openGroup(group.id)} style={{ cursor: 'pointer' }}>
-            {group.name} — invite code: <strong>{group.inviteCode}</strong>
-          </li>
+          <div
+            key={group.id}
+            className={`group-card ${group.members.length > 1 ? 'shared' : ''}`}
+            onClick={() => openGroup(group.id)}
+          >
+            <div className="group-card-title">
+              {group.members.length > 1 ? '👥' : '👤'} {group.name}
+            </div>
+            <p className="group-card-members">
+              {group.members.length} member{group.members.length !== 1 ? 's' : ''}
+            </p>
+            <div className="group-card-footer">
+              <span className="group-card-code">{group.inviteCode}</span>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

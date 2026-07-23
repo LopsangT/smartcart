@@ -1,0 +1,97 @@
+.groups-actions {
+  margin-bottom: 2rem;
+}
+
+.groups-action-row {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.groups-action-row input {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.groups-action-row input:focus {
+  border-color: #00d4ff;
+}
+
+.groups-action-row button {
+  padding: 0.7rem 1.2rem;
+  background-color: #1a1a2e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.groups-action-row button:hover {
+  background-color: #00d4ff;
+  color: #1a1a2e;
+}
+
+.groups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 220px);
+  gap: 1rem;
+}
+
+.group-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.group-card:hover {
+  border-color: #00d4ff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.group-card.shared {
+  border: 2px solid #6b46c1;
+}
+
+.group-card-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #1a1a2e;
+  margin-bottom: 0.5rem;
+}
+
+.group-card-members {
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 0.8rem;
+}
+
+.group-card-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.group-card-code {
+  font-family: monospace;
+  font-size: 0.8rem;
+  background: #f0f2f5;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  color: #666;
+  display: inline-block;
+  width: fit-content;
+}
+
+.invite-code-input {
+  max-width: 100px;
+  flex: 0 0 auto !important;
+  text-transform: uppercase;
+}

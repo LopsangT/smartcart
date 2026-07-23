@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import ShoppingList from '../ShoppingList';
 import AddItem from '../AddItem';
 import AISuggestions from '../AISuggestions';
 
 function Home() {
+  const { groupId } = useParams();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -31,10 +32,10 @@ function Home() {
   useEffect(() => {
     fetchItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [groupId]);
 
   const fetchItems = () => {
-    fetch('http://localhost:8080/api/items', {
+    fetch(`http://localhost:8080/api/items/${groupId}`, {
       headers: getAuthHeader(),
     })
       .then((response) => {
@@ -50,7 +51,7 @@ function Home() {
   };
 
   const addItem = (name, price) => {
-    fetch('http://localhost:8080/api/items', {
+    fetch(`http://localhost:8080/api/items/${groupId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -70,7 +71,7 @@ function Home() {
   };
 
   const deleteItem = (id) => {
-    fetch(`http://localhost:8080/api/items/${id}`, {
+    fetch(`http://localhost:8080/api/items/item/${id}`, {
       method: 'DELETE',
       headers: getAuthHeader(),
     })
@@ -83,7 +84,7 @@ function Home() {
 
   const clearAll = () => {
     items.forEach((item) => {
-      fetch(`http://localhost:8080/api/items/${item.id}`, {
+      fetch(`http://localhost:8080/api/items/item/${item.id}`, {
         method: 'DELETE',
         headers: getAuthHeader(),
       }).then((response) => {
@@ -96,7 +97,7 @@ function Home() {
   const updateQuantity = (id, newQuantity) => {
     if (newQuantity < 1) return;
 
-    fetch(`http://localhost:8080/api/items/${id}`, {
+    fetch(`http://localhost:8080/api/items/item/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -122,7 +123,7 @@ function Home() {
     const parsed = parseFloat(newPrice);
     if (isNaN(parsed) || parsed < 0) return;
 
-    fetch(`http://localhost:8080/api/items/${id}`, {
+    fetch(`http://localhost:8080/api/items/item/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -149,7 +150,7 @@ function Home() {
 
   const getSuggestions = () => {
     setLoadingSuggestions(true);
-    fetch('http://localhost:8080/api/items/suggestions', {
+    fetch(`http://localhost:8080/api/items/${groupId}/suggestions`, {
       headers: getAuthHeader(),
     })
       .then((response) => {
@@ -176,6 +177,7 @@ function Home() {
 
   return (
     <div className="container">
+      <Link to="/" className="back-link">← Back to my lists</Link>
       <h2>My Shopping List</h2>
       {loading ? (
         <p>Loading your list...</p>
