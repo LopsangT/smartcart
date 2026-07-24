@@ -76,4 +76,27 @@ public class GroupListController {
         response.put("message", "Joined group: " + groupList.getName());
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/{id}")
+    public GroupList updateGroup(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        Optional<GroupList> groupListOptional = groupListRepository.findById(id);
+        if (groupListOptional.isEmpty()) return null;
+
+        GroupList groupList = groupListOptional.get();
+
+        if (body.get("name") != null) {
+            groupList.setName(body.get("name"));
+        }
+
+        if (body.get("emoji") != null) {
+            groupList.setEmoji(body.get("emoji"));
+        }
+
+        return groupListRepository.save(groupList);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteGroup(@PathVariable Long id) {
+        groupListRepository.deleteById(id);
+    }   
 }

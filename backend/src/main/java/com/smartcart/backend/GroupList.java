@@ -19,6 +19,7 @@ public class GroupList {
 
     private String name;
     private String inviteCode;
+    private String emoji;
 
     @ManyToMany
     @JoinTable(
@@ -34,6 +35,7 @@ public class GroupList {
     public GroupList(String name, String inviteCode) {
         this.name = name;
         this.inviteCode = inviteCode;
+        this.emoji = null;
     }
 
     public Long getId() {
@@ -66,5 +68,13 @@ public class GroupList {
 
     public void setMembers(Set<User> members) {
         this.members = members;
+    }
+
+    public String getEmoji() {
+        return emoji;
+    }
+
+    public void setEmoji(String emoji) {
+        this.emoji = emoji;
     }
 }

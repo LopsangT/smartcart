@@ -8,6 +8,9 @@ function Groups() {
   const [inviteCode, setInviteCode] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const [editingId, setEditingId] = useState(null);
+  const [editName, setEditName] = useState('');
+  const [editEmoji, setEditEmoji] = useState('');
 
   const getAuthHeader = () => {
     const token = localStorage.getItem('token');
@@ -69,6 +72,49 @@ function Groups() {
     navigate(`/list/${groupId}`);
   };
 
+  const startEditing = (group) => {
+    setEditingId(group.id);
+    setEditName(group.name);
+    setEditEmoji(group.emoji || '');
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditName('');
+    setEditEmoji('');
+  };
+
+  const saveEdit = (groupId) => {
+    fetch(`http://localhost:8080/api/groups/${groupId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify({ name: editName, emoji: editEmoji }),
+    })
+      .then((response) => response.json())
+      .then((updatedGroup) => {
+        setGroups(
+          groups.map((g) => (g.id === groupId ? updatedGroup : g))
+        );
+        cancelEditing();
+      });
+  };
+
+  const deleteGroup = (groupId) => {
+    fetch(`http://localhost:8080/api/groups/${groupId}`, {
+      method: 'DELETE',
+      headers: getAuthHeader(),
+    }).then(() => {
+      setGroups(groups.filter((g) => g.id !== groupId));
+    });
+  };
+
+  const copyInviteCode = (code) => {
+    navigator.clipboard.writeText(code);
+  };
+
   return (
     <div className="container">
       <h2>My Lists</h2>
@@ -100,20 +146,74 @@ function Groups() {
 
       <div className="groups-grid">
         {groups.map((group) => (
-          <div
-            key={group.id}
-            className={`group-card ${group.members.length > 1 ? 'shared' : ''}`}
-            onClick={() => openGroup(group.id)}
-          >
-            <div className="group-card-title">
-              {group.members.length > 1 ? '👥' : '👤'} {group.name}
-            </div>
-            <p className="group-card-members">
-              {group.members.length} member{group.members.length !== 1 ? 's' : ''}
-            </p>
-            <div className="group-card-footer">
-              <span className="group-card-code">{group.inviteCode}</span>
-            </div>
+          <div key={group.id} className={`group-card ${group.members.length > 1 ? 'shared' : ''}`}>
+            {editingId === group.id ? (
+              <div className="group-card-edit">
+                <input
+                  type="text"
+                  className="edit-emoji-input"
+                  value={editEmoji}
+                  onChange={(e) => setEditEmoji(e.target.value)}
+                  placeholder="👤"
+                  maxLength={2}
+                />
+                <input
+                  type="text"
+                  className="edit-name-input"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                />
+                <div className="edit-actions">
+                  <button onClick={() => saveEdit(group.id)}>Save</button>
+                  <button onClick={cancelEditing}>Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="group-card-actions">
+                  <button
+                    className="card-icon-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      startEditing(group);
+                    }}
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    className="card-icon-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteGroup(group.id);
+                    }}
+                  >
+                    🗑️
+                  </button>
+                </div>
+
+                <div className="group-card-clickable" onClick={() => openGroup(group.id)}>
+                  <div className="group-card-title">
+                    {group.emoji || (group.members.length > 1 ? '👥' : '👤')} {group.name}
+                  </div>
+                  <p className="group-card-members">
+                    {group.members.length} member{group.members.length !== 1 ? 's' : ''}
+                  </p>
+                </div>
+
+                <div className="group-card-footer">
+                  <span className="group-card-code">{group.inviteCode}</span>
+                  <button
+                    className="copy-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      copyInviteCode(group.inviteCode);
+                    }}
+                  >
+                    📋
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         ))}
       </div>
